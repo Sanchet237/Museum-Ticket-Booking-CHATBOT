@@ -1,0 +1,5 @@
+/__pycache__/
+*.pyc
+ticket/__pycache__/ticket_details.cpython-311.pyc
+/.venv/
+.env
