@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Payment Gateway</title>
+    <script src="https://kit.fontawesome.com/e8fa2e31b4.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="payment-wrapper">
+        <div class="payment-options">
+            <h3>Payment methods</h3>
+            <hr>
+            <div class="payment-method" onclick="showCardPayment()" id="method-card" aria-label="Credit/Debit Card Payment">
+                <i class="fa-solid fa-credit-card"></i> Credit/Debit Card
+            </div>
+            <div class="payment-method" onclick="showBankingPayment()" id="method-banking" aria-label="Net Banking Payment">
+                <i class="fa-solid fa-university"></i> Net Banking
+            </div>
+            <div class="payment-method" onclick="showGooglePayPayment()" id="method-googlepay" aria-label="Google Pay Payment">
+                <i class="fa-brands fa-google-pay"></i> Google Pay
+            </div>
+            <div class="payment-method" onclick="showUpiPayment()" id="method-upi" aria-label="UPI Payment">
+                <i class="fa-solid fa-mobile-alt"></i> UPI
+            </div>
+            <hr>
+        </div>
+        <div class="payment-form">
+            <div id="card-section" class="payment-section">
+                <h3>Enter Card Details</h3><br>
+                <img src="https://www.shift4shop.com/images/credit-card-logos/cc-lg-4_b.png" alt="Card Logos" class="card-logos">
+                <form action="/submit-payment" method="post">
+                    <label for="card-number">Card Number</label>
+                    <input type="text" id="card-number" maxlength="16" placeholder="1234 5678 1234 5678" required>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="expiry-date">Expiry Date</label>
+                            <input type="text" id="expiry-date" maxlength="5" placeholder="MM/YY" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cvv">CVV</label>
+                            <input type="password" id="cvv" maxlength="3" placeholder="123" required>
+                        </div>
+                    </div>
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="you@example.com" required>
+                    <button type="submit">Pay Securely</button>
+                </form>
+            </div>
+
+            <div id="banking-section" class="payment-section">
+                <h3>Enter Net Banking Details</h3><br>
+                <form id="banking-form" class="payment-form-content">
+                    <label for="bank">Select Bank</label>
+                    <select id="bank" name="bank" required class="form-select">
+                        <option value="">Select your bank</option>
+                        <option value="sbi">SBI</option>
+                        <option value="axis">Axis Bank</option>
+                        <option value="hdfc">HDFC Bank</option>
+                        <option value="icici">ICICI Bank</option>
+                    </select>
+                    <label for="bank-email">Email Address</label>
+                    <input type="email" id="bank-email" placeholder="you@example.com" required class="form-input">
+                    <button type="button" onclick="redirectToBank()">Pay Securely</button>
+                </form>
+            </div>
+
+            <div id="googlepay-section" class="payment-section">
+                <h3>Google Pay</h3><br>
+                <form action="https://pay.google.com" method="get" target="_blank">
+                    <label for="googlepay-email">Email Address</label>
+                    <input type="email" id="googlepay-email" placeholder="you@example.com" required class="form-input">
+                    <button type="submit" class="form-button">Pay with Google Pay</button>
+                </form>
+            </div>
+
+            <div id="upi-section" class="payment-section">
+                <h3>Enter UPI Details</h3><br>
+                <form action="/submit-upi-payment" method="post" class="payment-form-content">
+                    <label for="upi-id">UPI ID</label>
+                    <input type="text" id="upi-id" placeholder="your.upi@bank" required class="form-input">
+                    <label for="upi-email">Email Address</label>
+                    <input type="email" id="upi-email" placeholder="you@example.com" required class="form-input">
+                    <button type="submit" class="form-button">Pay Securely</button>
+                </form>
+            </div>
+        </div>
+        <div class="payment-summary">
+            <h3>Ticket Summary</h3>
+            <hr>
+            <p>Total: ₹{{ total_price }}</p>
+            <p>Transaction ID: #1234567890</p>
+            <hr>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</body>
+</html>

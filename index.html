@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        body {
+            font-family: 'Helvetica', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to left top, #f115d7, #3d7eb6);
+            background-size: cover;
+            margin: 0;
+            padding: 0 20px;
+            flex-direction: column;
+        }
+
+        .chat-container {
+            width: 600px;
+            max-width: 100%;
+            background-color: #fff;
+            box-shadow: 10px 10px 10px rgb(143, 126, 126);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 80vh;
+        }
+
+        .chat-box {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: scroll;
+            background-color: #fafafa;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .chat-box p {
+            margin: 0;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap; /* Preserve spaces and new lines */
+            word-wrap: break-word;
+        }
+        
+        .chat-box .user, .chat-box .bot {
+            display: block;
+            max-width: 100%;
+            width: auto;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 15px;
+        }
+
+        .chat-box .user {
+            display: flex;
+            width: fit-content; /* Adjusts the bubble width dynamically */
+            text-align: right;
+            background-color: #4caf50;
+            color: white;
+            border-radius: 15px 15px 0 15px;
+            max-width: 70%;
+            margin-left: auto;
+        }
+
+        .chat-box .bot {
+            text-align: left;
+            width: fit-content;
+            background-color: #e0e0e0;
+            border-radius: 15px 15px 15px 0;
+            max-width: 70%;
+        }
+
+        .input-box {
+            display: flex;
+            border-top: 1px solid #ddd;
+            padding: 10px;
+            background-color: #fff;
+        }
+
+        .input-box input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .input-box button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin-left: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .input-box button:hover {
+            background-color: #45a049;
+        }
+
+        .image-container img {
+            width: 500px; 
+            height: 100px; 
+            display: block;
+            margin: 10 ;
+        }
+    </style>
+</head>
+<body>
+    <div class="image-container">
+        <img src="namaste.png" alt="Namaste">
+    </div>
+    <div class="chat-container">
+        <div class="chat-box" id="chat-box"></div>
+        <div class="input-box">
+            <input type="text" id="user-input" placeholder="Type your message..." onkeydown="if (event.key === 'Enter') sendMessage()" />
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        // Scroll to the bottom of chat-box automatically
+        function scrollToBottom() {
+            var chatBox = document.getElementById("chat-box");
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Function to send a message
+        function sendMessage() {
+            const userInput = document.getElementById("user-input").value;
+            if (userInput.trim() === "") return;
+
+            // Display the user's message
+            const chatBox = document.getElementById("chat-box");
+            chatBox.innerHTML += `<p class="user">${userInput}</p>`;
+
+            // Scroll to the bottom
+            scrollToBottom();
+
+            // Clear the input field
+            document.getElementById("user-input").value = "";
+
+            // Send the message to the backend (Assuming Python is handling the backend)
+            fetch('http://127.0.0.1:5000/chatbot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: userInput }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the bot's response with preserved whitespace and new lines
+                const botResponse = data.response.replace(/<a\s+(.*?)>/g, "<a $1 target='_blank'>");
+                // .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+                // .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
+                chatBox.innerHTML += `<div class="bot">${botResponse}</div>`;
+                scrollToBottom();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+
+</body>
+</html>

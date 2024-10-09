@@ -1,0 +1,5 @@
+flask
+nltk
+google-generativeai
+markdown2
+python_dotenv
